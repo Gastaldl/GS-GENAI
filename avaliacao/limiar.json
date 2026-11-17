@@ -1,0 +1,8 @@
+{
+ "threshold": 0.42,
+ "embedding_model": "BAAI/bge-m3",
+ "k": 3,
+ "rule": "maior valor em centésimos pelo menos 0,01 abaixo do menor s1 das perguntas respondíveis de dev e treino (sem as perguntas de treino descartadas pela descontaminação)",
+ "min_answerable_s1": 0.431,
+ "answerable_questions": 182
+}

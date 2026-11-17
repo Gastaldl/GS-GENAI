@@ -1,0 +1,45 @@
+[project]
+name = "luz-segura"
+version = "0.1.0"
+description = "Assistente de orientação ao cidadão sobre iluminação pública: RAG e LoRA com LLM local"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "matplotlib>=3.9",
+    "torch>=2.6",
+    "sentence-transformers>=5.0",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "pydantic>=2.8",
+    "httpx>=0.27",
+    "huggingface-hub>=0.30",
+    "jupyter>=1.1",
+    "nbconvert>=7.16",
+    "ipykernel>=6.29",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/luz_segura"]
+
+# O PyTorch vem do índice só de CPU: a busca vetorial não precisa de GPU,
+# e isso evita baixar bibliotecas CUDA em quem reproduzir no Linux.
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]

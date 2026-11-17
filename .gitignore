@@ -1,0 +1,28 @@
+# Ambientes e caches do Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Ferramentas baixadas (o README explica como obter)
+ferramentas/
+
+# Modelos baixados; só o adaptador treinado entra no repositório
+modelos/*
+!modelos/adaptador/
+!modelos/LEIAME.md
+
+# Registros locais de uso da API
+registros/
+
+# Originais baixados das fontes (PDF e HTML); base/fontes.csv tem os endereços
+base/originais/
+
+# Cache de embeddings
+.cache/
+
+# Zip do treino no Colab (cerca de 200 MB, acima do limite de 100 MB por arquivo do GitHub) e
+# saídas do notebook 03 quando ele roda fora do Colab
+*.zip
+saida_treino/

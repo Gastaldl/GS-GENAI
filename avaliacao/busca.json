@@ -1,0 +1,38 @@
+{
+ "dev_comparison": [
+  {
+   "model": "intfloat/multilingual-e5-small",
+   "revision": "614241f622",
+   "recall@1": 0.5833,
+   "recall@3": 0.8333,
+   "recall@5": 0.8333,
+   "coverage@3": "20/24",
+   "ms_per_question": 4
+  },
+  {
+   "model": "ibm-granite/granite-embedding-97m-multilingual-r2",
+   "revision": "835ad14087",
+   "recall@1": 0.6458,
+   "recall@3": 0.8333,
+   "recall@5": 0.9167,
+   "coverage@3": "20/24",
+   "ms_per_question": 5
+  },
+  {
+   "model": "BAAI/bge-m3",
+   "revision": "5617a9f61b",
+   "recall@1": 0.7708,
+   "recall@3": 0.9583,
+   "recall@5": 1.0,
+   "coverage@3": "23/24",
+   "ms_per_question": 38
+  }
+ ],
+ "test": {
+  "questions": 39,
+  "recall@1": 0.769,
+  "recall@3": 0.962,
+  "recall@5": 0.974,
+  "coverage@3": "37/39"
+ }
+}

@@ -1,0 +1,6 @@
+# Arquivos de dados com hash registrado (manifestos, partição, impressões digitais das
+# execuções): o Git não converte o fim de linha, para os bytes serem os mesmos em qualquer clone.
+*.jsonl -text
+*.json -text
+*.csv -text
+*.ipynb -text
