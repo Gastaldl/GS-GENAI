@@ -14,6 +14,28 @@ FIAP Global Solution 2026.2 · CitizenTech · Engenharia de Software 4ES · Gene
 
 ## 2. Ficha técnica
 
+### 2.1 Ficha técnica do MVP
+
+| campo | Luz Segura |
+|---|---|
+| Nome do produto | Luz Segura |
+| Cidadão e território | quem anda a pé ou usa transporte público à noite em Osasco (SP) |
+| Problema, em uma frase | ruas e paradas de ônibus mal iluminadas deixam o trajeto noturno inseguro, e o morador não sabe a quem pedir o conserto (Prefeitura ou Enel) nem como cobrar |
+| Proposta de valor | relatar um ponto escuro com foto e localização, receber um texto pronto para o pedido oficial na Central 156 e tirar dúvidas com respostas que citam a fonte |
+| Arquitetura: componentes | relato com foto e localização; visão computacional que classifica a iluminação da foto; lista de prioridades que junta relatos repetidos e cruza o ponto com paradas de ônibus e previsão do tempo; robô de verificação com sensor de luminosidade; mapa agregado de pontos escuros; e o assistente deste repositório (busca, modelo local e API) |
+| Fontes de dados | do assistente: 26 documentos em 76 trechos (atos oficiais, páginas gov.br, Banco Mundial, fichas em redação própria e documentos do produto, seção 4); do produto: relatos e fotos dos moradores, paradas de ônibus e previsão do tempo |
+| Modelos de IA utilizados | do assistente: Qwen3-4B-Instruct-2507 com adaptador LoRA próprio, e BAAI/bge-m3 na busca; do produto: modelo de visão computacional que classifica a foto |
+| URL do MVP e repositório | repositório deste componente: https://github.com/Gastaldl/GS-GENAI |
+| Indicadores de impacto (assistente) | parcela das perguntas respondidas com fonte e parcela recusada, por motivo (limiar, modelo, validação, inciso sem apoio), tiradas do registro mascarado; perguntas recusadas que viram trechos novos na base depois da revisão; tempo de resposta; e, a cada mudança da base, placar líquido e resposta sem apoio no conjunto de teste (hoje 0,800 e 8,6% na configuração 3) |
+| ODS conectados | ODS 11 (metas 11.2 e 11.7), ODS 10 (meta 10.2) e ODS 9 (meta 9.1) |
+
+Como o produto contribui para cada ODS:
+- **ODS 11, metas 11.7 e 11.2.** A meta 11.7 pede espaços públicos seguros, inclusivos e acessíveis, em especial para mulheres, crianças, idosos e pessoas com deficiência. A 11.2 pede transporte seguro e acessível. O Luz Segura leva o ponto escuro da calçada e da parada de ônibus até o pedido de conserto, e o assistente explica a quem pedir e como.
+- **ODS 10, meta 10.2.** A meta pede a inclusão de todos. O assistente responde de graça, em português simples e sem pedir identificação. Ele roda numa placa de vídeo comum, sem serviço pago de terceiros.
+- **ODS 9, meta 9.1.** A meta pede infraestrutura de qualidade e confiável, com acesso equitativo. O pedido que chega ao responsável certo (Prefeitura ou Enel), com o texto pronto, apoia a manutenção da iluminação pública.
+
+### 2.2 Ficha técnica do componente de IA
+
 | item | escolha |
 |---|---|
 | Problema | o morador de Osasco não sabe a quem recorrer quando a iluminação da rua falha (Prefeitura ou Enel, Central 156, ouvidoria, emergência), nem o que é a CIP na conta de luz, e o Luz Segura precisa explicar o próprio funcionamento sem inventar regras |
@@ -27,7 +49,7 @@ FIAP Global Solution 2026.2 · CitizenTech · Engenharia de Software 4ES · Gene
 | Métricas | recall@1 e recall@3 da busca; JSON estrito; desfecho por caso (correta, insuficiente, alucinação, recusa disfarçada, recusa indevida, recusa correta, resposta indevida); placar líquido (+1/0/−1); taxa de resposta; resposta sem apoio entre respondidas ((alucinação + resposta indevida) / respostas dadas); citação de trecho de evidência; intervalos de Wilson; teste de McNemar; auditoria cega dos julgamentos automáticos |
 | Ajuste fino | LoRA rank 16, alpha 16, dropout 0,05 nas 7 projeções, QLoRA 4 bits (nf4), 3 épocas, taxa 2e-4 cosseno, lote efetivo 8, perda só na resposta; 328 exemplos de treino e 37 de validação montados só com trechos de treino; Google Colab com GPU T4; 46,6 minutos de treino; época 2, escolhida no dev; adaptador convertido para GGUF f16, com 66 MB |
 | Saída da API | `consta`, `resposta`, `fontes` (id, documento, endereço e texto de cada trecho citado), `aviso_seguranca` (fixo, com fonte, quando a pergunta indica perigo elétrico) e `diagnostico` (modelo, similaridade máxima, limiar e motivo da recusa) |
-| Proteção de dados | o modelo e a busca rodam na máquina local; o CPF é mascarado antes da busca e do modelo; o registro guarda só a pergunta mascarada (CPF, telefone e e-mail), os identificadores dos trechos recuperados, a indicação de recusa com o motivo e o tempo de resposta; um arquivo por dia, apagado depois de 30 dias (a limpeza roda quando a API sobe e a cada registro) |
+| Proteção de dados (LGPD) | o modelo e a busca rodam na máquina local; o CPF é mascarado antes da busca e do modelo; o registro guarda só a pergunta mascarada (CPF, telefone e e-mail), os identificadores dos trechos recuperados, a indicação de recusa com o motivo e o tempo de resposta; um arquivo por dia, apagado depois de 30 dias (a limpeza roda quando a API sobe e a cada registro) |
 
 ## 3. Pipeline
 
@@ -63,6 +85,22 @@ flowchart TB
 3. **Geração.** O modelo devolve `{"consta", "resposta", "fontes"}`. O código valida o JSON e os rótulos, troca cada rótulo pelo trecho real (documento, endereço e texto) e transforma qualquer saída inválida na recusa padrão. No sistema final, também recusa a resposta que cita um inciso de lei ausente dos trechos (erro 5).
 4. **Segurança.** Uma regra por palavras-chave detecta perigo elétrico imediato (fio caído, choque, poste caindo) e acrescenta um aviso fixo com os telefones de emergência e as fontes, seja qual for a resposta do modelo.
 5. **Três configurações do mesmo modelo.** Na **sem contexto**, só a pergunta vai ao modelo. Na **RAG simples**, entram os trechos com o adaptador desligado. Na **RAG + LoRA**, os mesmos trechos com o adaptador ligado. No placar, as configurações 2 e 3 usam só a busca densa, e nenhuma das três confere incisos. O sistema final, escolhido no dev, é a RAG + LoRA com as duas correções e é o que a API usa.
+
+### Uso responsável: explicação, pessoa no circuito, vieses e LGPD
+
+- **A decisão do modelo fica visível.** Cada resposta traz os trechos citados, com documento, endereço e texto. O `diagnostico` da API mostra a similaridade máxima, o limiar e o motivo da recusa (limiar, modelo, validação ou inciso sem apoio). A recusa nunca é silenciosa: o morador recebe a resposta padrão "não consta".
+- **Uma pessoa decide o que afeta o cidadão.** O assistente só orienta. Ele não registra pedido, não consulta protocolo, não promete prazo e não mexe na prioridade dos pontos escuros. O conserto só entra na programação quando o morador registra o pedido na Central 156, e a ordem de atendimento é da Prefeitura. O aviso de risco elétrico é uma regra fixa, que não depende do modelo. As recusas ficam no registro com o motivo. Pela política de privacidade do produto, elas formam a fila de revisão da equipe que atualiza a base.
+- **Vieses avaliados.**
+  - O teste separa o acerto por tipo de pergunta (notebook 04, seção 4). Na configuração 3, as paráfrases acertam 10 de 10, os fatos diretos 7 de 10, os procedimentos 4 de 6 e o risco elétrico 4 de 5. Entre as perguntas sem resposta, são recusadas 13 de 14 perto do tema e 5 de 5 fora do tema.
+  - O limiar foi escolhido para não recusar perguntas curtas. Um limiar de 0,50 barraria 5 perguntas respondíveis, todas consultas curtas (seção 5.1).
+  - Um viés apareceu fora do teste: com o LoRA, o modelo passou a recusar perguntas que traziam CPF. A API passou a mascarar o CPF antes da busca e do modelo (seção 5.5).
+  - O conjunto de teste não tem uma categoria para escrita com erros de digitação ou abreviações, comum em mensagens de celular. Esse é um próximo passo.
+- **LGPD (Lei 13.709/2018).**
+  - Necessidade (art. 6º, III): o assistente não pede identificação, e o CPF é mascarado antes da busca e do modelo. O registro guarda só cinco campos: pergunta mascarada, trechos, recusa, motivo e tempo. Não guarda IP, nome nem horário. Telefone e e-mail chegam ao modelo local, porque a pergunta pode citar um canal oficial, e são mascarados no registro.
+  - Segurança (art. 6º, VII): o modelo e a busca rodam na máquina local, e a pergunta não vai para serviço de terceiros.
+  - Eliminação (art. 16): os registros são apagados de forma automática depois de 30 dias.
+  - Transparência e direitos do titular (art. 6º, VI, e art. 18): a política de privacidade está na base (`produto-privacidade`), e o assistente pode citá-la nas respostas. Ela indica como pedir informação sobre os dados e a exclusão de um relato.
+- **Integração com o produto.** As outras partes do Luz Segura chamam o assistente pela API. `POST /perguntar` recebe a pergunta e devolve `consta`, `resposta`, `fontes`, `aviso_seguranca` e `diagnostico` (README, passo 6). Se o servidor do modelo cair, a API responde 503 em vez de devolver uma resposta sem apoio.
 
 ## 4. Base de conhecimento
 

@@ -16,6 +16,26 @@ O mesmo modelo local foi avaliado em três configurações (sem contexto, RAG si
 | João Victor Soares | RM551410 |
 | Márcio Gastaldi de Oliveira Soares | RM98811 |
 
+## Links
+
+- **Repositório:** https://github.com/Gastaldl/GS-GENAI
+- **Vídeo:** COLOCAR_LINK_DO_VIDEO
+
+## Ficha técnica do MVP
+
+| campo | Luz Segura |
+|---|---|
+| Nome do produto | Luz Segura |
+| Cidadão e território | quem anda a pé ou usa transporte público à noite em Osasco (SP) |
+| Problema, em uma frase | ruas e paradas de ônibus mal iluminadas deixam o trajeto noturno inseguro, e o morador não sabe a quem pedir o conserto (Prefeitura ou Enel) nem como cobrar |
+| Proposta de valor | relatar um ponto escuro com foto e localização, receber um texto pronto para o pedido oficial na Central 156 e tirar dúvidas com respostas que citam a fonte |
+| Arquitetura: componentes | relato com foto e localização; visão computacional que classifica a iluminação da foto; lista de prioridades que junta relatos repetidos e cruza o ponto com paradas de ônibus e previsão do tempo; robô de verificação com sensor de luminosidade; mapa agregado de pontos escuros; e o assistente deste repositório (busca, modelo local e API) |
+| Fontes de dados | do assistente: 26 documentos em 76 trechos ([base/fontes.md](base/fontes.md)); do produto: relatos e fotos dos moradores, paradas de ônibus e previsão do tempo |
+| Modelos de IA utilizados | do assistente: Qwen3-4B-Instruct-2507 com adaptador LoRA próprio, e BAAI/bge-m3 na busca; do produto: modelo de visão computacional que classifica a foto |
+| URL do MVP e repositório | repositório deste componente: https://github.com/Gastaldl/GS-GENAI |
+| Indicadores de impacto (assistente) | parcela das perguntas respondidas com fonte e parcela recusada, por motivo, tiradas do registro mascarado; perguntas recusadas que viram trechos novos na base; tempo de resposta; placar líquido no conjunto de teste a cada mudança da base |
+| ODS conectados | ODS 11 (metas 11.2 e 11.7), ODS 10 (meta 10.2) e ODS 9 (meta 9.1); a contribuição para cada meta está no [RELATORIO.md](RELATORIO.md), seção 2.1 |
+
 ## Resultados
 
 Placar no conjunto de teste, com o mesmo modelo local nas três configurações. São 60 casos: 39 que a base responde e 21 que não constam nela. O placar líquido dá +1 por acerto ou recusa correta, −1 por alucinação ou resposta indevida e 0 no resto, e divide pelo número de casos. Os detalhes estão no [notebook 04](notebooks/04_placar_e_erros.ipynb) e no [RELATORIO.md](RELATORIO.md).
@@ -32,7 +52,7 @@ Placar no conjunto de teste, com o mesmo modelo local nas três configurações.
 - **O sistema final foi escolhido só no dev.** É a RAG + LoRA, com a busca que acrescenta um 4º trecho do BM25 e a conferência dos incisos citados. No teste, só como conferência, marca 0,850, com acerto de 88,3%. Esse número é otimista: as duas correções partiram de erros vistos no teste (t08 e t32 no erro 3, t09 no erro 5). A comparação das configurações fica com o placar da tabela.
 - **O juiz automático foi auditado antes do placar final.** A auditoria foi cega e corrigiu 15 julgamentos em 11 casos, sempre com a mesma regra para todas as configurações (notebook 04, seção 4).
 
-## Ficha técnica
+## Ficha técnica do componente de IA
 
 | item | escolha |
 |---|---|
@@ -45,7 +65,7 @@ Placar no conjunto de teste, com o mesmo modelo local nas três configurações.
 | Avaliação | 60 casos de teste (39 com resposta, 21 que não constam) e 40 de dev (24 e 16), com gabarito, pontos-chave, padrões proibidos e evidência literal |
 | Ajuste fino | LoRA rank 16 com QLoRA 4 bits no Google Colab (T4), 328 exemplos de treino e 37 de validação, só com trechos de treino ([treino/LEIAME.md](treino/LEIAME.md)); adaptador convertido para GGUF f16 (66 MB), da época 2, escolhida no dev |
 | Saída | JSON `{"consta", "resposta", "fontes"}` do modelo, validado; a API devolve os trechos citados (documento, endereço e texto), um aviso fixo de segurança em caso de perigo elétrico e um diagnóstico |
-| Proteção de dados | o modelo roda localmente; o CPF é mascarado antes da busca e do modelo; o registro guarda só a pergunta mascarada (CPF, telefone e e-mail), os identificadores dos trechos recuperados, a indicação de recusa com o motivo e o tempo de resposta, num arquivo por dia apagado depois de 30 dias |
+| Proteção de dados (LGPD) | o modelo roda localmente; o CPF é mascarado antes da busca e do modelo; o registro guarda só a pergunta mascarada (CPF, telefone e e-mail), os identificadores dos trechos recuperados, a indicação de recusa com o motivo e o tempo de resposta, num arquivo por dia apagado depois de 30 dias |
 
 ## Pipeline
 
