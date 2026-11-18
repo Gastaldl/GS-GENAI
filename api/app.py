@@ -14,9 +14,9 @@ Variáveis de ambiente:
 - LUZ_LOG_DIR: pasta dos registros diários (padrão registros/), lida em src/luz_segura/privacy.py.
 
 Proteção de dados: a pergunta é processada só pela busca, dentro da API, e pelo llama-server de
-LUZ_SERVER_URL (por padrão, na própria máquina). Ela só é guardada mascarada (CPF, telefone e
-e-mail), num registro diário com os trechos recuperados, a recusa e o tempo de resposta, apagado
-após 30 dias.
+LUZ_SERVER_URL (por padrão, na própria máquina). O CPF é mascarado antes da busca e do modelo.
+A pergunta só é guardada mascarada (CPF, telefone e e-mail), num registro diário com os trechos
+recuperados, a recusa e o tempo de resposta, apagado após 30 dias.
 
 Uso (com o llama-server já rodando, veja o README):
     uv run uvicorn api.app:app --port 8000
@@ -39,8 +39,9 @@ from pydantic import BaseModel, Field
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from luz_segura.assistant import MODES, Assistant, load_final_system, load_search, load_threshold  # noqa: E402
-from luz_segura.privacy import mask_personal_data, purge_old_logs, write_log  # noqa: E402
+from luz_segura.assistant import (MODES, Assistant, load_final_system, load_search, load_threshold,  # noqa: E402
+                                  provision_check_adopted)
+from luz_segura.privacy import mask_cpf, mask_personal_data, purge_old_logs, write_log  # noqa: E402
 
 PAGE = Path(__file__).resolve().parent / "static" / "index.html"
 ApiMode = Literal["rag_lora", "rag", "no_context"]
@@ -77,7 +78,8 @@ def build_assistant() -> Assistant:
     with model_server_errors():
         server = LlamaServer()
     chunks = load_chunks()
-    return Assistant(chunks, load_search(chunks), server, threshold=load_threshold())
+    return Assistant(chunks, load_search(chunks), server, threshold=load_threshold(),
+                     check_provisions=provision_check_adopted())
 
 
 def mode_from_environment() -> str | None:
@@ -127,6 +129,7 @@ def create_app(assistant: Assistant | None = None) -> FastAPI:
             model = current.server.description()
         return {"status": "ok", "modelo": model, "trechos": len(current.chunks),
                 "busca": getattr(current.retriever, "label", None), "limiar": current.threshold,
+                "confere_incisos": current.check_provisions,
                 "configuracao_padrao": default_mode(current, configured)}
 
     @app.post("/perguntar")
@@ -136,7 +139,7 @@ def create_app(assistant: Assistant | None = None) -> FastAPI:
         if MODES[mode]["lora_scale"] and not current.server.has_adapter:
             raise HTTPException(status_code=400, detail="o servidor do modelo foi iniciado sem o adaptador LoRA")
         with model_server_errors():
-            result = current.run(body.pergunta, mode)
+            result = current.run(mask_cpf(body.pergunta), mode)
         write_log({
             "pergunta_mascarada": mask_personal_data(body.pergunta),
             "trechos": [h.chunk.id for h in result.hits],

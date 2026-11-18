@@ -165,7 +165,7 @@ def save_sources(rows: list[dict], folder: Path) -> None:
     total = sum(r["chunks"] for r in rows)
     (folder / "fontes.md").write_text(
         "# Fontes da base de conhecimento\n\nGerado por `python -m luz_segura.knowledge_base`. "
-        f"Acesso de todas as fontes em 15/11/2026. {len(rows)} documentos, {total} trechos. A última coluna "
+        f"Acesso a todas as fontes em 15/11/2026. {len(rows)} documentos, {total} trechos. A última coluna "
         "lista os endereços próprios de seções (cada trecho guarda o seu em base/trechos.jsonl) e as outras "
         "fontes consultadas para redigir as fichas.\n\n" + header + "".join(lines),
         encoding="utf-8",

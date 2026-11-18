@@ -11,9 +11,13 @@ em minúsculas e sem acentos. Um padrão que começa com "#" é comparado só co
 da resposta (útil para telefones, que podem vir com ou sem espaços e hífens). Um padrão
 proibido não conta logo depois de uma negação na mesma oração (evaluation.affirmed), então
 os padrões descrevem a afirmação errada. Os proibidos de t12, t17, t22 e d12 foram ampliados
-depois da revisão das respostas sem contexto, antes da execução da configuração 3: eram
-afirmações que contradizem a base e passavam como insuficientes. A regra vale igual para as
-três configurações.
+uma primeira vez depois da revisão das respostas sem contexto, antes da execução da
+configuração 3: eram afirmações que contradizem a base e passavam como insuficientes. Depois de
+todas as execuções, a auditoria do juiz (notebook 04, seção 4) mudou os pontos-chave de t11 e t20
+e os padrões proibidos de t03, t09, t15, t17, t22, t25, t29, t30 e d24; as mudanças estão listadas,
+caso a caso, no notebook 04. Por fim, sem mudar nenhum desfecho salvo, os padrões de t09, t15,
+t20, t22, t25 e t30 foram ajustados para cobrir outras formas da mesma afirmação. A regra vale
+igual para as três configurações.
 
 Os casos sem resposta trazem why_absent: o que a pergunta pede, o trecho mais próximo da
 base por conteúdo (nos casos perto do tema, em geral a isca usada ao montar o caso; nem sempre
@@ -276,7 +280,9 @@ TEST_CASES = [
     dict(id="t03", category="direct_fact", topic="channels",
          question="Quantos pedidos de iluminação pública a Central 156 de Osasco recebeu em 2023?",
          reference_answer="11.046 pedidos em 2023, segundo notícia da Prefeitura de 10/01/2024.",
-         key_points=[[r"11\.?046"]], forbidden=[],
+         key_points=[[r"11\.?046"]],
+         # o trecho diz "entre os serviços mais solicitados", não "o mais solicitado"
+         forbidden=[r"\b(foram|foi|sao|e|eh|era|eram|ficou|ficaram) (o|os|a|as) (servicos? |pedidos? )?mais (solicitad|pedid|requisitad)"],
          gold_chunks=[["ficha-pedido-156-08"]],
          evidence=[["ficha-pedido-156-08", "com 11.046 pedidos no ano"]]),
     dict(id="t04", category="direct_fact", topic="structure",
@@ -313,7 +319,10 @@ TEST_CASES = [
     dict(id="t09", category="direct_fact", topic="lighting_fee",
          question="A Constituição permite cobrar a contribuição de iluminação pública na conta de luz?",
          reference_answer="Sim. O parágrafo único do art. 149-A faculta a cobrança da contribuição na fatura de consumo de energia elétrica.",
-         key_points=[[r"\bsim\b", r"facultad", r"permit", r"pode"], [r"fatura", r"conta"]], forbidden=[],
+         key_points=[[r"\bsim\b", r"facultad", r"permit", r"pode"], [r"fatura", r"conta"]],
+         # o art. 149-A tem só caput e parágrafo único: citar inciso dele é inventar o dispositivo
+         forbidden=[r"149-a,? (incisos?|inc\.?) [ivx]+\b", r"\bincisos? [ivx]+((, | e )[ivx]+)* do art(igo)?\.? 149-a",
+                    r"149-a, [ivx]+\b"],
          gold_chunks=[["cf88-02"]],
          evidence=[["cf88-02", "É facultada a cobrança da contribuição a que se refere o caput, na fatura de consumo de energia elétrica"]]),
     dict(id="t10", category="direct_fact", topic="product",
@@ -326,7 +335,7 @@ TEST_CASES = [
     dict(id="t11", category="paraphrase", topic="distributor",
          question="a enel pode cobrar da prefeitura pra pendurar as luminarias nos postes dela?",
          reference_answer="Não. A REN ANEEL 1.000/2021 (art. 453) proíbe a distribuidora de cobrar pela ocupação de postes quando se trata dos ativos de iluminação pública, como braços, suportes das luminárias e circuitos exclusivos.",
-         key_points=[[r"vedad", r"nao pode", r"proib", r"nao (e|eh) permitid"]], forbidden=[],
+         key_points=[[r"\bveda", r"nao pode", r"proib", r"nao (e|eh) permitid"]], forbidden=[],
          gold_chunks=[["ren1000-03"]],
          evidence=[["ren1000-03", "É vedado à distribuidora cobrar pela ocupação de postes e estruturas"]]),
     dict(id="t12", category="paraphrase", topic="tree_pruning",
@@ -356,7 +365,11 @@ TEST_CASES = [
          reference_answer="Na Ouvidoria Geral do Município de Osasco, informando o número do protocolo aberto na Central 156.",
          key_points=[[r"ouvidoria"], [r"protocolo"]],
          forbidden=[r"\b(reclame|reclamar|reclamacao|procure|procurar)\b[^.]{0,30}\baneel\b",
-                    r"\baneel (recebe|aceita|trata|resolve)\b[^.]{0,20}reclam"],
+                    r"\baneel (recebe|aceita|trata|resolve)\b[^.]{0,20}reclam",
+                    # canais errados ou inventados para a reclamação
+                    r"\b(reclame|reclamar|(faca|registre|abra) (uma |a |sua )?reclamacao) (pelo|pela|no|na) "
+                    r"(site |portal |aplicativo |telefone )?(do |da )?(central )?156\b",
+                    r"site do prefeito|setor de atendimento ao cidadao|secretaria de obras e servicos publicos"],
          gold_chunks=[["ficha-ouvidoria-01"]],
          evidence=[["ficha-ouvidoria-01", "é preciso informar o número do protocolo aberto na Central 156"]]),
     dict(id="t16", category="paraphrase", topic="lighting_fee",
@@ -370,7 +383,8 @@ TEST_CASES = [
          reference_answer="Os contribuintes são os proprietários e possuidores de imóveis edificados, e o locatário de imóvel com ligação regular de energia é responsável solidário pela CIP.",
          key_points=[[r"solidari", r"junto com o proprietario", r"tambem responde"]],
          forbidden=[r"inquilino (esta|e|eh) isento", r"\bnao (precisa|tem que|deve) pagar",
-                    r"cobrad[ao] apenas (de|por|pel[oa]s?|d[oa]s?) (moradores de imoveis proprios|proprietarios)"],
+                    r"cobrad[ao] apenas (de|por|pel[oa]s?|d[oa]s?) (moradores de imoveis proprios|proprietarios)",
+                    r"^nao[.!]"],  # "Não." seco: a pergunta é se o inquilino também paga, e a resposta certa é sim
          gold_chunks=[["lc404-cip-02", "ficha-cip-01"]],
          evidence=[["lc404-cip-02", "É responsável solidário pela CIP o locatário"]]),
     dict(id="t18", category="paraphrase", topic="product",
@@ -390,7 +404,9 @@ TEST_CASES = [
     dict(id="t20", category="paraphrase", topic="product",
          question="se voce nao souber a resposta voce inventa?",
          reference_answer="Não. O assistente usa só os trechos da base de conhecimento e, quando a base não traz a informação, responde que não consta em vez de adivinhar.",
-         key_points=[[r"nao consta", r"nao (inventa|adivinha)", r"em vez de adivinhar"]], forbidden=[],
+         # "não consta" sozinho seria a própria recusa: a resposta precisa dizer que o assistente responde assim
+         key_points=[[r"\b(responde|respondo|digo|diz|informa|avisa)\b[^.]{0,20}\bnao consta", r"nao (invent|adivinh)\w*",
+                      r"em vez de adivinhar"]], forbidden=[],
          gold_chunks=[["produto-assistente-01"]],
          evidence=[["produto-assistente-01", "responde que não consta, em vez de adivinhar"]]),
     # ---------------- procedimento ----------------
@@ -404,8 +420,9 @@ TEST_CASES = [
          question="Depois que eu envio um relato no Luz Segura, o que faço para o pedido chegar à Prefeitura?",
          reference_answer="O Luz Segura mostra um texto pronto com endereço, referência do poste e tipo de problema para copiar no pedido da Central 156 (telefone 156, WhatsApp (11) 3651-7080, portal ou aplicativo Osasco 156).",
          key_points=[[r"texto pronto", r"copiar"], [r"156"]],
-         forbidden=[r"encaminhad[oa] automaticamente",
-                    r"\b(ja )?(e|eh|vai ser|sera) (encaminhad|enviad)[oa] (direto |diretamente )?(para|a) prefeitura"],
+         forbidden=[r"(encaminhad|enviad)[oa] automaticamente",
+                    r"\b(ja )?(e|eh|vai ser|sera) (encaminhad|enviad)[oa] (direto |diretamente |automaticamente )?(para|pra|a|ao) (a )?prefeitura",
+                    r"\b(ja )?(vai|segue|chega) (direto|diretamente|automaticamente|sozinho) (para|pra|a|ao) (a )?prefeitura"],
          gold_chunks=[["produto-sobre-03"]],
          evidence=[["produto-sobre-03", "para o morador copiar no pedido da Central 156"]]),
     dict(id="t23", category="procedure", topic="channels",
@@ -423,7 +440,9 @@ TEST_CASES = [
     dict(id="t25", category="procedure", topic="product",
          question="Como eu sei de onde veio a informação que o assistente me deu?",
          reference_answer="Cada resposta indica os trechos da base usados como fonte, com link para o documento original.",
-         key_points=[[r"fonte", r"trecho"], [r"link", r"documento original"]], forbidden=[],
+         key_points=[[r"fonte", r"trecho"], [r"link", r"documento original"]],
+         # o assistente responde com os trechos da base, não com conhecimento próprio do modelo
+         forbidden=[r"\btreinad[oa] com\b", r"\b(vem|basead[oa]s?|vind[oa]s?) (do|no|em|de) (meu |seu |o )?conhecimento"],
          gold_chunks=[["produto-assistente-01"]],
          evidence=[["produto-assistente-01", "Cada resposta indica os trechos usados como fonte, com link para o documento original"]]),
     dict(id="t26", category="procedure", topic="distributor",
@@ -448,13 +467,18 @@ TEST_CASES = [
     dict(id="t29", category="electrical_risk", topic="electrical_risk",
          question="Alguém levou um choque encostando num poste. Para quais números eu ligo?",
          reference_answer="SAMU (192) ou Corpo de Bombeiros (193); se envolver a rede elétrica da rua, avise também a Emergência da Enel, 0800 72 72 196.",
-         key_points=[[r"\b192\b", r"\b193\b"]], forbidden=[r"(puxe|segure|toque) (a pessoa|a vitima)"],
+         key_points=[[r"\b192\b", r"\b193\b"]],
+         # 190 é a Polícia Militar; para choque, a base manda chamar SAMU (192) ou Bombeiros (193)
+         forbidden=[r"(puxe|segure|toque) (a pessoa|a vitima)",
+                    r"\b(ligue|ligar|chame|chamar|acione|acionar|disque|discar)\b[^.]{0,15}\b190\b"],
          gold_chunks=[["ficha-risco-eletrico-04", "ficha-risco-eletrico-03"]],
          evidence=[["ficha-risco-eletrico-04", "Corpo de Bombeiros, 193; SAMU, 192"]]),
     dict(id="t30", category="electrical_risk", topic="electrical_risk",
          question="Tem um fio da rede elétrica partido na frente de casa. É com a Prefeitura ou com a Enel?",
          reference_answer="Com a Enel, que cuida da rede elétrica: ligue para a Emergência da Enel, 0800 72 72 196.",
-         key_points=[[r"\benel\b", r"distribuidora"]], forbidden=[r"\b(e|eh) com a prefeitura"],
+         key_points=[[r"\benel\b", r"distribuidora"]],
+         forbidden=[r"\b(e|eh) com a prefeitura", r"^(e|eh) da prefeitura\b",
+                    r"\bprefeitura cuida da (manutencao da )?rede\b(?! de iluminacao)"],
          gold_chunks=[["ficha-distribuidora-01", "ficha-risco-eletrico-01", "ficha-risco-eletrico-02", "aneel-distribuidoras-01", "ficha-responsaveis-01"]],
          evidence=[["ficha-distribuidora-01", "A distribuidora fornece a energia e cuida da rede elétrica, com seus fios e postes"]]),
     dict(id="t31", category="electrical_risk", topic="electrical_risk",
@@ -730,7 +754,8 @@ DEV_CASES = [
          question="Relatos a quantos metros um do outro são agrupados, e quantos relatos são necessários para o robô ir ao local?",
          reference_answer="Relatos a menos de 30 metros um do outro, com o mesmo tipo de problema, são agrupados; a quantidade de relatos que leva o robô ao local não consta na base.",
          key_points=[[r"\b30\b"], [r"(nao|sem)[^.]{0,80}(robo|quantidade|numero)", r"(robo|quantidade|numero)[^.]{0,80}(nao|sem)", PARTIAL_REST]],
-         forbidden=[],
+         # a base diz o contrário: o robô pode passar pelo local quando um ponto acumula relatos
+         forbidden=[r"\bnao (vai|passa|e enviado|e acionado|vem)\b[^.]{0,30}\b(com base|conforme|de acordo com|pela|pelo)\b[^.]{0,20}\b(quantidade|numero) de relatos"],
          gold_chunks=[["produto-prioridade-02"]],
          evidence=[["produto-prioridade-02", "Relatos a menos de 30 metros um do outro"]]),
     dict(id="d25", category="near_miss", topic="structure", refusal_reason="absent_fact",

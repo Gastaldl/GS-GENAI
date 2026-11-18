@@ -1,0 +1,366 @@
+{
+ "mode": "train",
+ "base_model": "Qwen/Qwen3-4B-Instruct-2507",
+ "use_4bit": true,
+ "device": "Tesla T4",
+ "data_sha256": "2012ca226b0dc8b02298c740577c1c425826840e90ab29facc8dac08d3aefddd",
+ "tokens": {
+  "train": {
+   "examples": 328,
+   "total": 345390,
+   "median": 1037,
+   "max": 1545
+  },
+  "validation": {
+   "examples": 37,
+   "total": 38629,
+   "median": 982,
+   "max": 1549
+  }
+ },
+ "hyperparameters": {
+  "r": 16,
+  "lora_alpha": 16,
+  "lora_dropout": 0.05,
+  "learning_rate": 0.0002,
+  "scheduler": "cosine",
+  "epochs": 3,
+  "batch_size": 1,
+  "grad_accum": 8,
+  "max_length": 2048,
+  "seed": 42
+ },
+ "best_checkpoint": "checkpoint-41",
+ "best_epoch": 1,
+ "eval_loss_by_epoch": [
+  {
+   "epoch": 1,
+   "step": 41,
+   "loss": 0.2370477318763733
+  },
+  {
+   "epoch": 2,
+   "step": 82,
+   "loss": 0.2442624568939209
+  },
+  {
+   "epoch": 3,
+   "step": 123,
+   "loss": 0.25448501110076904
+  }
+ ],
+ "log_history": [
+  {
+   "loss": 0.8999439239501953,
+   "grad_norm": 2.170590400695801,
+   "learning_rate": 8e-05,
+   "entropy": 0.046564741551992486,
+   "mean_token_accuracy": 0.9267047494649887,
+   "num_tokens": 41421.0,
+   "epoch": 0.12195121951219512,
+   "step": 5
+  },
+  {
+   "loss": 0.6138310432434082,
+   "grad_norm": 0.8131479620933533,
+   "learning_rate": 0.00018,
+   "entropy": 0.09678966751753251,
+   "mean_token_accuracy": 0.9175263032317161,
+   "num_tokens": 83990.0,
+   "epoch": 0.24390243902439024,
+   "step": 10
+  },
+  {
+   "loss": 0.3467329740524292,
+   "grad_norm": 0.49164527654647827,
+   "learning_rate": 0.0001993822891578708,
+   "entropy": 0.2693060460849665,
+   "mean_token_accuracy": 0.9311113640666008,
+   "num_tokens": 124127.0,
+   "epoch": 0.36585365853658536,
+   "step": 15
+  },
+  {
+   "loss": 0.34453299045562746,
+   "grad_norm": 0.3256896436214447,
+   "learning_rate": 0.00019688591222645607,
+   "entropy": 0.31553830271586775,
+   "mean_token_accuracy": 0.9385744124650955,
+   "num_tokens": 165897.0,
+   "epoch": 0.4878048780487805,
+   "step": 20
+  },
+  {
+   "loss": 0.341725754737854,
+   "grad_norm": 0.4070388674736023,
+   "learning_rate": 0.00019252038574264405,
+   "entropy": 0.3628500185441226,
+   "mean_token_accuracy": 0.9168225809931755,
+   "num_tokens": 209781.0,
+   "epoch": 0.6097560975609756,
+   "step": 25
+  },
+  {
+   "loss": 0.23225579261779786,
+   "grad_norm": 0.5628876090049744,
+   "learning_rate": 0.0001863699306389282,
+   "entropy": 0.21539816725999117,
+   "mean_token_accuracy": 0.9441615343093872,
+   "num_tokens": 251569.0,
+   "epoch": 0.7317073170731707,
+   "step": 30
+  },
+  {
+   "loss": 0.261389422416687,
+   "grad_norm": 0.5086206793785095,
+   "learning_rate": 0.00017855320317956784,
+   "entropy": 0.18674466881202534,
+   "mean_token_accuracy": 0.9413036644458771,
+   "num_tokens": 295169.0,
+   "epoch": 0.8536585365853658,
+   "step": 35
+  },
+  {
+   "loss": 0.21075499057769775,
+   "grad_norm": 0.38221749663352966,
+   "learning_rate": 0.00016922100581144228,
+   "entropy": 0.17580869141675065,
+   "mean_token_accuracy": 0.9481610476970672,
+   "num_tokens": 337333.0,
+   "epoch": 0.975609756097561,
+   "step": 40
+  },
+  {
+   "eval_loss": 0.2370477318763733,
+   "eval_runtime": 30.9317,
+   "eval_samples_per_second": 1.196,
+   "eval_steps_per_second": 1.196,
+   "eval_entropy": 0.1512993016701846,
+   "eval_mean_token_accuracy": 0.9395406632810026,
+   "eval_num_tokens": 345390.0,
+   "epoch": 1.0,
+   "step": 41
+  },
+  {
+   "loss": 0.1286253809928894,
+   "grad_norm": 0.3465037941932678,
+   "learning_rate": 0.00015855337784194577,
+   "entropy": 0.10029446072585416,
+   "mean_token_accuracy": 0.9716748148202896,
+   "num_tokens": 379166.0,
+   "epoch": 1.0975609756097562,
+   "step": 45
+  },
+  {
+   "loss": 0.15932326316833495,
+   "grad_norm": 0.41646164655685425,
+   "learning_rate": 0.0001467561220713628,
+   "entropy": 0.10577131314494181,
+   "mean_token_accuracy": 0.9670180588960647,
+   "num_tokens": 422743.0,
+   "epoch": 1.2195121951219512,
+   "step": 50
+  },
+  {
+   "loss": 0.17244499921798706,
+   "grad_norm": 0.4688630700111389,
+   "learning_rate": 0.00013405683438888282,
+   "entropy": 0.11781872461433522,
+   "mean_token_accuracy": 0.9591717556118965,
+   "num_tokens": 464968.0,
+   "epoch": 1.3414634146341464,
+   "step": 55
+  },
+  {
+   "loss": 0.15785022974014282,
+   "grad_norm": 0.38359585404396057,
+   "learning_rate": 0.00012070051293037492,
+   "entropy": 0.13549379772448447,
+   "mean_token_accuracy": 0.9632895305752754,
+   "num_tokens": 506450.0,
+   "epoch": 1.4634146341463414,
+   "step": 60
+  },
+  {
+   "loss": 0.13717120885849,
+   "grad_norm": 0.3626018166542053,
+   "learning_rate": 0.00010694483150725458,
+   "entropy": 0.13680851438111857,
+   "mean_token_accuracy": 0.9651444405317307,
+   "num_tokens": 551254.0,
+   "epoch": 1.5853658536585367,
+   "step": 65
+  },
+  {
+   "loss": 0.13337807655334472,
+   "grad_norm": 0.441540002822876,
+   "learning_rate": 9.305516849274541e-05,
+   "entropy": 0.12065754222130635,
+   "mean_token_accuracy": 0.9685531884431839,
+   "num_tokens": 591315.0,
+   "epoch": 1.7073170731707317,
+   "step": 70
+  },
+  {
+   "loss": 0.08992362022399902,
+   "grad_norm": 0.38379859924316406,
+   "learning_rate": 7.929948706962508e-05,
+   "entropy": 0.07828134961309843,
+   "mean_token_accuracy": 0.9808169469237328,
+   "num_tokens": 633901.0,
+   "epoch": 1.8292682926829267,
+   "step": 75
+  },
+  {
+   "loss": 0.13067662715911865,
+   "grad_norm": 0.6276131272315979,
+   "learning_rate": 6.594316561111724e-05,
+   "entropy": 0.10685736485320377,
+   "mean_token_accuracy": 0.9634028822183609,
+   "num_tokens": 673818.0,
+   "epoch": 1.951219512195122,
+   "step": 80
+  },
+  {
+   "eval_loss": 0.2442624568939209,
+   "eval_runtime": 30.8391,
+   "eval_samples_per_second": 1.2,
+   "eval_steps_per_second": 1.2,
+   "eval_entropy": 0.10586456622852869,
+   "eval_mean_token_accuracy": 0.9421223756429311,
+   "eval_num_tokens": 690780.0,
+   "epoch": 2.0,
+   "step": 82
+  },
+  {
+   "loss": 0.09193382263183594,
+   "grad_norm": 0.4602048099040985,
+   "learning_rate": 5.324387792863719e-05,
+   "entropy": 0.09559243555486319,
+   "mean_token_accuracy": 0.9767760321497917,
+   "num_tokens": 716806.0,
+   "epoch": 2.073170731707317,
+   "step": 85
+  },
+  {
+   "loss": 0.0629148006439209,
+   "grad_norm": 0.21729318797588348,
+   "learning_rate": 4.144662215805426e-05,
+   "entropy": 0.07442480085956049,
+   "mean_token_accuracy": 0.987155157327652,
+   "num_tokens": 758696.0,
+   "epoch": 2.1951219512195124,
+   "step": 90
+  },
+  {
+   "loss": 0.05323330760002136,
+   "grad_norm": 0.2724390923976898,
+   "learning_rate": 3.077899418855772e-05,
+   "entropy": 0.0663074934403994,
+   "mean_token_accuracy": 0.9884774252772331,
+   "num_tokens": 800224.0,
+   "epoch": 2.317073170731707,
+   "step": 95
+  },
+  {
+   "loss": 0.060786855220794675,
+   "grad_norm": 0.2957908511161804,
+   "learning_rate": 2.1446796820432167e-05,
+   "entropy": 0.06948442846987746,
+   "mean_token_accuracy": 0.9881221726536751,
+   "num_tokens": 843837.0,
+   "epoch": 2.4390243902439024,
+   "step": 100
+  },
+  {
+   "loss": 0.060156577825546266,
+   "grad_norm": 0.43684443831443787,
+   "learning_rate": 1.363006936107183e-05,
+   "entropy": 0.07314879003788519,
+   "mean_token_accuracy": 0.9850045800209045,
+   "num_tokens": 885529.0,
+   "epoch": 2.5609756097560976,
+   "step": 105
+  },
+  {
+   "loss": 0.06976059675216675,
+   "grad_norm": 0.3941135108470917,
+   "learning_rate": 7.479614257355971e-06,
+   "entropy": 0.07221829461268499,
+   "mean_token_accuracy": 0.9866171315312385,
+   "num_tokens": 927813.0,
+   "epoch": 2.682926829268293,
+   "step": 110
+  },
+  {
+   "loss": 0.056911778450012204,
+   "grad_norm": 0.3711360692977905,
+   "learning_rate": 3.1140877735439387e-06,
+   "entropy": 0.07251325058205112,
+   "mean_token_accuracy": 0.9892238557338715,
+   "num_tokens": 968598.0,
+   "epoch": 2.8048780487804876,
+   "step": 115
+  },
+  {
+   "loss": 0.07654082775115967,
+   "grad_norm": 0.28335243463516235,
+   "learning_rate": 6.177108421292266e-07,
+   "entropy": 0.07609236967837205,
+   "mean_token_accuracy": 0.9822581589221955,
+   "num_tokens": 1011442.0,
+   "epoch": 2.926829268292683,
+   "step": 120
+  },
+  {
+   "eval_loss": 0.25448501110076904,
+   "eval_runtime": 30.7412,
+   "eval_samples_per_second": 1.204,
+   "eval_steps_per_second": 1.204,
+   "eval_entropy": 0.09119187532751066,
+   "eval_mean_token_accuracy": 0.9437243584040049,
+   "eval_num_tokens": 1036170.0,
+   "epoch": 3.0,
+   "step": 123
+  },
+  {
+   "train_runtime": 2794.3508,
+   "train_samples_per_second": 0.352,
+   "train_steps_per_second": 0.044,
+   "total_flos": 2.27949654422016e+16,
+   "train_loss": 0.20056573925464133,
+   "epoch": 3.0,
+   "step": 123
+  }
+ ],
+ "duration_min": 46.6,
+ "peak_memory_gib": 3.6069583892822266,
+ "sanity_check": [
+  {
+   "generated": "{\"consta\": false, \"resposta\": \"\", \"fontes\": []}",
+   "expected": "{\"consta\": false, \"resposta\": \"\", \"fontes\": []}",
+   "valid_json": true
+  },
+  {
+   "generated": "{\"consta\": true, \"resposta\": \"Não. O portal da Central 156 informa prazo médio, e não prazo garantido. Ele avisa que o tempo de análise pode variar de acordo com a demanda.\", \"fontes\": [\"T1\"]}",
+   "expected": "{\"consta\": true, \"resposta\": \"O assistente não informa prazos que não estejam publicados.\", \"fontes\": [\"T3\"]}",
+   "valid_json": true
+  },
+  {
+   "generated": "{\"consta\": true, \"resposta\": \"Sim. O art. 454, inciso V, da REN ANEEL 1.000/2021 diz que a distribuidora deve ter procedimentos para inspeção e correção de deficiência técnica ou de segurança que ofereçam risco de danos a pessoas, bens ou ao funcionamento do sistema elétrico ou de iluminação pública.\", \"fontes\": [\"T2\"]}",
+   "expected": "{\"consta\": true, \"resposta\": \"Sim. O art. 454, inciso V, da REN ANEEL 1.000/2021 diz que a norma técnica da distribuidora deve ter procedimentos para inspeção e correção de deficiência técnica ou de segurança que ofereçam risco de danos a pessoas, bens ou ao funcionamento do sistema. Também deve tratar de procedimentos em caso de acidentes.\", \"fontes\": [\"T2\"]}",
+   "valid_json": true
+  }
+ ],
+ "versions": {
+  "python": "3.13.16",
+  "colab": "release-colab-external-images_20261116-060055_RC00",
+  "torch": "2.14.1+cu130",
+  "transformers": "5.22.1",
+  "peft": "0.21.2",
+  "trl": "1.18.0",
+  "accelerate": "1.15.0",
+  "datasets": "4.8.5",
+  "bitsandbytes": "0.50.2"
+ }
+}

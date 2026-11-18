@@ -1,0 +1,27 @@
+{
+ "chosen_epoch": 2,
+ "rule": "maior placar líquido no dev; empate: menor perda na validação",
+ "adapter_file": "luz-segura-lora-f16.gguf",
+ "adapter_sha256": "bafcba7b416f66e69e74f96bbfc7147e7050677dd287ecbbf4d9a2456891261f",
+ "adapter_bytes": 66094848,
+ "dev": [
+  {
+   "época": 1,
+   "perda na validação": 0.237,
+   "placar líquido": 0.9,
+   "acerto": "36/40 = 90.0% (76.9 a 96.0)"
+  },
+  {
+   "época": 2,
+   "perda na validação": 0.2443,
+   "placar líquido": 0.925,
+   "acerto": "37/40 = 92.5% (80.1 a 97.4)"
+  },
+  {
+   "época": 3,
+   "perda na validação": 0.2545,
+   "placar líquido": 0.925,
+   "acerto": "37/40 = 92.5% (80.1 a 97.4)"
+  }
+ ]
+}

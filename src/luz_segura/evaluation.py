@@ -11,7 +11,8 @@ Desfechos de cada caso:
 - CORRETA: respondeu e cobriu todos os pontos-chave, sem dado proibido nem dado sem apoio;
 - INSUFICIENTE: respondeu sem erro detectado, mas faltou ponto-chave;
 - ALUCINACAO: respondeu com padrão proibido ou com número, e-mail ou site que não está
-  no material de apoio (trechos entregues ao modelo; sem contexto, o gabarito);
+  no material de apoio (a pergunta e os trechos entregues ao modelo; sem contexto, a pergunta,
+  o gabarito e os trechos de evidência do caso; veja support_text);
 - RECUSA_DISFARCADA: marcou consta true, mas o texto só diz que a informação não consta;
 - RECUSA_INDEVIDA: recusou uma pergunta que a base responde;
 - RECUSA_CORRETA: recusou uma pergunta que a base não responde;
@@ -292,6 +293,8 @@ def decision(record: dict, threshold: float | None) -> str | None:
     com limiar 0 e o limiar é aplicado aqui, para que a mesma execução sirva a qualquer limiar."""
     if uses_context(record) and threshold is not None and record["max_score"] < threshold:
         return "limiar"
+    if record.get("refusal_reason") == "dispositivo_sem_apoio":  # só com a conferência dos incisos ligada
+        return "dispositivo_sem_apoio"
     if not record["usable"]:
         return "validacao"
     if not record["model_consta"]:

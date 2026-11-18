@@ -6,6 +6,11 @@ As três configurações comparadas usam o mesmo modelo base:
 - rag_lora: igual ao rag, com o adaptador LoRA ligado.
 O modo lora_no_context (adaptador ligado, sem trechos) é só um diagnóstico do notebook 04:
 mostra o que o ajuste fino sabe sem a busca. Ele não faz parte do placar nem da API.
+
+check_provisions=True recusa, nas configurações com trechos (rag e rag_lora), a resposta que cita
+um inciso de lei ausente dos trechos (correção do erro 5 do notebook 04); a no_context, sem trechos,
+não passa por essa conferência. As configurações do placar rodam sem ela; a API a liga se o
+notebook 04 a adotou em avaliacao/sistema_final.json.
 """
 from __future__ import annotations
 
@@ -13,7 +18,7 @@ import json
 import time
 from dataclasses import dataclass, field
 
-from luz_segura.answer import ParsedOutput, parse_output
+from luz_segura.answer import ParsedOutput, parse_output, unsupported_provisions
 from luz_segura.knowledge_base import ROOT, Chunk
 from luz_segura.llm import Generation, LlamaServer
 from luz_segura.prompt import build_messages, chunk_label
@@ -33,6 +38,7 @@ REFUSAL_MESSAGE = (
 BELOW_THRESHOLD = "limiar"
 MODEL_REFUSED = "modelo"
 INVALID_OUTPUT = "validacao"
+UNSUPPORTED_PROVISION = "dispositivo_sem_apoio"
 THRESHOLD_FILE = ROOT / "avaliacao" / "limiar.json"
 FINAL_SYSTEM_FILE = ROOT / "avaliacao" / "sistema_final.json"
 MODEL_NAME = "Qwen3-4B-Instruct-2507"
@@ -49,6 +55,11 @@ def load_final_system() -> dict:
     if FINAL_SYSTEM_FILE.exists():
         return json.loads(FINAL_SYSTEM_FILE.read_text(encoding="utf-8"))
     return {"mode": None, "retrieval": {"adopted": False}}
+
+
+def provision_check_adopted() -> bool:
+    """True se o notebook 04 adotou a conferência dos incisos citados (avaliacao/sistema_final.json)."""
+    return bool(load_final_system().get("provision_check", {}).get("adopted"))
 
 
 def load_search(chunks: list[Chunk]):
@@ -90,13 +101,14 @@ class AssistantResult:
 
 class Assistant:
     def __init__(self, chunks: list[Chunk], retriever: Retriever | None, server: LlamaServer,
-                 threshold: float, k: int = 3, model_name: str = MODEL_NAME):
+                 threshold: float, k: int = 3, model_name: str = MODEL_NAME, check_provisions: bool = False):
         self.chunks = {c.id: c for c in chunks}
         self.retriever = retriever
         self.server = server
         self.threshold = threshold
         self.k = k
         self.model_name = model_name
+        self.check_provisions = check_provisions
 
     def run(self, question: str, mode: str, generate_below_threshold: bool = False) -> AssistantResult:
         """generate_below_threshold=True gera a resposta mesmo abaixo do limiar (usado na avaliação
@@ -122,6 +134,8 @@ class Assistant:
             result.refusal_reason = INVALID_OUTPUT
         elif not result.parsed.consta:
             result.refusal_reason = MODEL_REFUSED
+        elif self.check_provisions and chunks and unsupported_provisions(result.parsed.resposta, [c.text for c in chunks]):
+            result.refusal_reason = UNSUPPORTED_PROVISION
         result.seconds = time.perf_counter() - start
         result.response = self._response(result)
         return result

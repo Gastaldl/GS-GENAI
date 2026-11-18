@@ -4,7 +4,7 @@ import json
 import pytest
 
 from luz_segura import evaluation
-from luz_segura.answer import parse_output
+from luz_segura.answer import parse_output, unsupported_provisions
 from luz_segura.evaluation import (CORRECT, CORRECT_REFUSAL, DISGUISED_REFUSAL, HALLUCINATION, INSUFFICIENT,
                                    WRONG_ANSWER, WRONG_REFUSAL, configuration_fingerprint, judge, load_cases, mcnemar,
                                    summarize, unsupported_data, wilson)
@@ -33,6 +33,31 @@ def test_output_validation(text, strict, usable, error_part):
     assert parsed.usable is usable
     if error_part:
         assert error_part in parsed.error
+
+
+@pytest.mark.parametrize("answer, chunk_ids, missing", [
+    # o art. 149-A tem só caput e parágrafo único (resposta real da configuração 3 no caso t09)
+    ("Sim. O art. 149-A, inciso I, da Constituição Federal permite a cobrança da contribuição na fatura.",
+     ["cf88-02"], ["art. 149-A, inciso I"]),
+    ("Não. O art. 453, inciso I, da REN ANEEL 1.000/2021 veda a distribuidora cobrar pela ocupação de postes.",
+     ["ren1000-03"], []),
+    ("Conforme o inciso V do art. 454 da REN ANEEL 1.000/2021, a norma trata de inspeção.", ["ren1000-04"], []),
+    ("Conforme o inciso XV do art. 454 da REN ANEEL 1.000/2021, a norma trata de inspeção.", ["ren1000-04"],
+     ["art. 454, inciso XV"]),
+    ("A cobrança observa o art. 150, I e III, da Constituição.", ["cf88-02"], []),  # citado em prosa no trecho
+    ("O art. 222, incisos I e III, da LC 404/2022 traz as isenções.", ["lc404-cip-05"], []),
+    ("O art. 453, inciso I, da REN ANEEL 1.000/2021 veda a cobrança.", ["ficha-pedido-156-02"],
+     ["art. 453, inciso I"]),  # artigo ausente dos trechos recebidos
+    ("Ligue para o 156 ou use o WhatsApp (11) 3651-7080.", ["ficha-pedido-156-02"], []),
+    # inciso de um parágrafo, citado na lei (cabeçalho) ou em prosa na ficha
+    ("A Lei 13.460/2017, art. 7º, § 2º, VII, pede o prazo máximo.", ["lei13460-02"], ["art. 7, inciso VII"]),
+    ("O inciso IX do § 2º do art. 7º da Lei 13.460/2017 pede o prazo máximo.", ["lei13460-02"], ["art. 7, inciso IX"]),
+    ("A Lei federal 13.460/2017, art. 7º, § 2º, IV, pede a previsão do prazo máximo.", ["ficha-prazos-02"], []),
+    ("A Lei 13.460/2017, art. 7º, inciso IV, pede a previsão do prazo máximo.", ["ficha-prazos-02"], []),
+    ("A Lei 13.460/2017, art. 7º, inciso V, pede a previsão do prazo máximo.", ["ficha-prazos-02"], ["art. 7, inciso V"]),
+])
+def test_unsupported_provisions(answer, chunk_ids, missing):
+    assert unsupported_provisions(answer, [CHUNKS[c].text for c in chunk_ids]) == missing
 
 
 def test_prompt_messages():

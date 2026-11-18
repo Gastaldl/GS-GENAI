@@ -1,4 +1,5 @@
-"""Busca léxica (BM25) e regra da busca corrigida (2 trechos da busca densa + 1 da léxica)."""
+"""Busca léxica (BM25) e as duas regras da busca corrigida: acrescentar o melhor trecho do BM25 como 4º
+(a adotada no sistema final) ou trocar o 3º trecho da busca densa por ele."""
 import numpy as np
 
 from luz_segura.evaluation import markdown_table

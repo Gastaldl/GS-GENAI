@@ -1,6 +1,6 @@
 # Fontes da base de conhecimento
 
-Gerado por `python -m luz_segura.knowledge_base`. Acesso de todas as fontes em 15/11/2026. 26 documentos, 76 trechos. A última coluna lista os endereços próprios de seções (cada trecho guarda o seu em base/trechos.jsonl) e as outras fontes consultadas para redigir as fichas.
+Gerado por `python -m luz_segura.knowledge_base`. Acesso a todas as fontes em 15/11/2026. 26 documentos, 76 trechos. A última coluna lista os endereços próprios de seções (cada trecho guarda o seu em base/trechos.jsonl) e as outras fontes consultadas para redigir as fichas.
 
 | Documento | Fonte | Formato original | Tipo e licença | Trechos | Outros endereços (seções e fontes consultadas) |
 |---|---|---|---|---|---|

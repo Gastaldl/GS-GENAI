@@ -13,7 +13,8 @@ Etapas:
    (cosseno bge-m3 >= 0,77 ou Jaccard de trigramas de caracteres >= 0,45).
 3. Separação de 10% das perguntas para a validação antes de montar os exemplos, para que
    nenhuma pergunta apareça nos dois arquivos.
-4. Montagem dos exemplos, sempre com 3 trechos, como na busca real (k = 3). Só entram
+4. Montagem dos exemplos, sempre com 3 trechos, como na busca densa avaliada no placar (k = 3);
+   o 4º trecho que a busca do sistema final às vezes acrescenta não aparece no treino. Só entram
    trechos de treino; os de dev e de teste nunca aparecem no treino.
    - answer: trecho certo + 2 dos 4 trechos de treino mais parecidos com a pergunta, com o
      trecho certo em posição sorteada;

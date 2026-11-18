@@ -38,6 +38,7 @@ class FakeServer:
 
     def chat(self, messages, lora_scale=0.0):
         self.calls.append(lora_scale)
+        self.last_messages = messages
         if self.error is not None:
             raise self.error
         return Generation(self.output, "stop", 900, 30, 0.5)
@@ -89,6 +90,36 @@ def test_invalid_output_becomes_refusal():
     client, _ = client_for("Ligue para o 156, é rapidinho!")
     data = client.post("/perguntar", json={"pergunta": "Como peço conserto da lâmpada?"}).json()
     assert data["consta"] is False and data["diagnostico"]["motivo_recusa"] == "validacao"
+
+
+def test_provision_check_refuses_an_invented_inciso():
+    output = ('{"consta": true, "resposta": "Sim. O art. 149-A, inciso I, da Constituição Federal permite a '
+              'cobrança na fatura.", "fontes": ["T1"]}')
+    retriever = FakeRetriever(["cf88-02", "ficha-cip-01", "lc404-cip-01"], 0.7)
+    for check, refused in ((False, False), (True, True)):
+        assistant = Assistant(CHUNKS, retriever, FakeServer(output), threshold=0.42, check_provisions=check)
+        client = TestClient(create_app(assistant))
+        data = client.post("/perguntar", json={"pergunta": "A Constituição permite cobrar a CIP na conta de luz?"}).json()
+        assert data["consta"] is not refused
+        assert data["diagnostico"]["motivo_recusa"] == ("dispositivo_sem_apoio" if refused else None)
+        assert client.get("/saude").json()["confere_incisos"] is check
+
+
+def test_cpf_is_masked_before_the_model_and_phone_is_kept(temporary_logs):
+    client, assistant = client_for('{"consta": true, "resposta": "Ligue para o 156.", "fontes": ["T1"]}')
+    client.post("/perguntar", json={"pergunta": "Meu CPF é 123.456.789-09. O WhatsApp (11) 3651-7080 atende de noite?"})
+    sent = assistant.server.last_messages[-1]["content"]
+    assert "123.456.789-09" not in sent and "[CPF]" in sent and "(11) 3651-7080" in sent
+    saved = json.loads((temporary_logs / f"{date.today().isoformat()}.jsonl").read_text(encoding="utf-8"))
+    assert "[CPF]" in saved["pergunta_mascarada"] and "3651-7080" not in saved["pergunta_mascarada"]
+
+
+def test_provision_check_follows_the_final_system(monkeypatch):
+    from luz_segura import assistant as assistant_module
+
+    for settings, adopted in (({}, False), ({"provision_check": {"adopted": True}}, True)):
+        monkeypatch.setattr(assistant_module, "load_final_system", lambda s=settings: {"mode": None, **s})
+        assert assistant_module.provision_check_adopted() is adopted
 
 
 def test_safety_notice_and_masked_log(temporary_logs):

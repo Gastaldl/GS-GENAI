@@ -1,0 +1,376 @@
+{
+ "threshold": 0.42,
+ "adapter_epoch": 2,
+ "test": {
+  "no_context": {
+   "cases": 60,
+   "outcomes": {
+    "CORRETA": 1,
+    "INSUFICIENTE": 2,
+    "ALUCINACAO": 7,
+    "RECUSA_DISFARCADA": 0,
+    "RECUSA_INDEVIDA": 29,
+    "RECUSA_CORRETA": 19,
+    "RESPOSTA_INDEVIDA": 2
+   },
+   "net_score": 0.18333333333333332,
+   "accuracy": [
+    20,
+    60
+   ],
+   "correct_among_answerable": [
+    1,
+    39
+   ],
+   "correct_refusals_among_unanswerable": [
+    19,
+    21
+   ],
+   "answer_rate": [
+    12,
+    60
+   ],
+   "unsupported_among_answered": [
+    9,
+    12
+   ],
+   "json_strict": [
+    60,
+    60
+   ],
+   "json_usable": [
+    60,
+    60
+   ],
+   "seconds_per_question": 0.6755000000000001,
+   "outcome_by_case": {
+    "t01": "RECUSA_INDEVIDA",
+    "t02": "RECUSA_INDEVIDA",
+    "t03": "RECUSA_INDEVIDA",
+    "t04": "RECUSA_INDEVIDA",
+    "t05": "RECUSA_INDEVIDA",
+    "t06": "RECUSA_INDEVIDA",
+    "t07": "RECUSA_INDEVIDA",
+    "t08": "RECUSA_INDEVIDA",
+    "t09": "RECUSA_INDEVIDA",
+    "t10": "ALUCINACAO",
+    "t11": "RECUSA_INDEVIDA",
+    "t12": "ALUCINACAO",
+    "t13": "RECUSA_INDEVIDA",
+    "t14": "RECUSA_INDEVIDA",
+    "t15": "ALUCINACAO",
+    "t16": "RECUSA_INDEVIDA",
+    "t17": "ALUCINACAO",
+    "t18": "RECUSA_INDEVIDA",
+    "t19": "RECUSA_INDEVIDA",
+    "t20": "RECUSA_INDEVIDA",
+    "t21": "INSUFICIENTE",
+    "t22": "ALUCINACAO",
+    "t23": "INSUFICIENTE",
+    "t24": "RECUSA_INDEVIDA",
+    "t25": "ALUCINACAO",
+    "t26": "RECUSA_INDEVIDA",
+    "t27": "RECUSA_INDEVIDA",
+    "t28": "RECUSA_INDEVIDA",
+    "t29": "ALUCINACAO",
+    "t30": "CORRETA",
+    "t31": "RECUSA_INDEVIDA",
+    "t32": "RECUSA_INDEVIDA",
+    "t33": "RECUSA_INDEVIDA",
+    "t34": "RECUSA_INDEVIDA",
+    "t35": "RECUSA_INDEVIDA",
+    "t36": "RECUSA_INDEVIDA",
+    "t37": "RECUSA_INDEVIDA",
+    "t38": "RECUSA_INDEVIDA",
+    "t39": "RECUSA_INDEVIDA",
+    "t40": "RECUSA_CORRETA",
+    "t41": "RECUSA_CORRETA",
+    "t42": "RECUSA_CORRETA",
+    "t43": "RECUSA_CORRETA",
+    "t44": "RECUSA_CORRETA",
+    "t45": "RECUSA_CORRETA",
+    "t46": "RECUSA_CORRETA",
+    "t47": "RECUSA_CORRETA",
+    "t48": "RECUSA_CORRETA",
+    "t49": "RECUSA_CORRETA",
+    "t50": "RECUSA_CORRETA",
+    "t51": "RECUSA_CORRETA",
+    "t52": "RECUSA_CORRETA",
+    "t53": "RECUSA_CORRETA",
+    "t54": "RECUSA_CORRETA",
+    "t55": "RESPOSTA_INDEVIDA",
+    "t56": "RECUSA_CORRETA",
+    "t57": "RESPOSTA_INDEVIDA",
+    "t58": "RECUSA_CORRETA",
+    "t59": "RECUSA_CORRETA",
+    "t60": "RECUSA_CORRETA"
+   }
+  },
+  "rag": {
+   "cases": 60,
+   "outcomes": {
+    "CORRETA": 30,
+    "INSUFICIENTE": 0,
+    "ALUCINACAO": 0,
+    "RECUSA_DISFARCADA": 0,
+    "RECUSA_INDEVIDA": 9,
+    "RECUSA_CORRETA": 19,
+    "RESPOSTA_INDEVIDA": 2
+   },
+   "net_score": 0.7833333333333333,
+   "accuracy": [
+    49,
+    60
+   ],
+   "correct_among_answerable": [
+    30,
+    39
+   ],
+   "correct_refusals_among_unanswerable": [
+    19,
+    21
+   ],
+   "answer_rate": [
+    32,
+    60
+   ],
+   "unsupported_among_answered": [
+    2,
+    32
+   ],
+   "json_strict": [
+    60,
+    60
+   ],
+   "json_usable": [
+    60,
+    60
+   ],
+   "seconds_per_question": 2.163616666666667,
+   "cites_evidence": [
+    30,
+    30
+   ],
+   "outcome_by_case": {
+    "t01": "CORRETA",
+    "t02": "CORRETA",
+    "t03": "CORRETA",
+    "t04": "CORRETA",
+    "t05": "CORRETA",
+    "t06": "CORRETA",
+    "t07": "CORRETA",
+    "t08": "RECUSA_INDEVIDA",
+    "t09": "CORRETA",
+    "t10": "RECUSA_INDEVIDA",
+    "t11": "RECUSA_INDEVIDA",
+    "t12": "CORRETA",
+    "t13": "CORRETA",
+    "t14": "CORRETA",
+    "t15": "CORRETA",
+    "t16": "CORRETA",
+    "t17": "CORRETA",
+    "t18": "CORRETA",
+    "t19": "CORRETA",
+    "t20": "CORRETA",
+    "t21": "CORRETA",
+    "t22": "CORRETA",
+    "t23": "CORRETA",
+    "t24": "CORRETA",
+    "t25": "CORRETA",
+    "t26": "RECUSA_INDEVIDA",
+    "t27": "CORRETA",
+    "t28": "CORRETA",
+    "t29": "CORRETA",
+    "t30": "CORRETA",
+    "t31": "RECUSA_INDEVIDA",
+    "t32": "RECUSA_INDEVIDA",
+    "t33": "CORRETA",
+    "t34": "CORRETA",
+    "t35": "CORRETA",
+    "t36": "RECUSA_INDEVIDA",
+    "t37": "RECUSA_INDEVIDA",
+    "t38": "CORRETA",
+    "t39": "RECUSA_INDEVIDA",
+    "t40": "RECUSA_CORRETA",
+    "t41": "RECUSA_CORRETA",
+    "t42": "RECUSA_CORRETA",
+    "t43": "RECUSA_CORRETA",
+    "t44": "RECUSA_CORRETA",
+    "t45": "RECUSA_CORRETA",
+    "t46": "RECUSA_CORRETA",
+    "t47": "RECUSA_CORRETA",
+    "t48": "RECUSA_CORRETA",
+    "t49": "RESPOSTA_INDEVIDA",
+    "t50": "RECUSA_CORRETA",
+    "t51": "RECUSA_CORRETA",
+    "t52": "RESPOSTA_INDEVIDA",
+    "t53": "RECUSA_CORRETA",
+    "t54": "RECUSA_CORRETA",
+    "t55": "RECUSA_CORRETA",
+    "t56": "RECUSA_CORRETA",
+    "t57": "RECUSA_CORRETA",
+    "t58": "RECUSA_CORRETA",
+    "t59": "RECUSA_CORRETA",
+    "t60": "RECUSA_CORRETA"
+   }
+  },
+  "rag_lora": {
+   "cases": 60,
+   "outcomes": {
+    "CORRETA": 31,
+    "INSUFICIENTE": 1,
+    "ALUCINACAO": 2,
+    "RECUSA_DISFARCADA": 0,
+    "RECUSA_INDEVIDA": 5,
+    "RECUSA_CORRETA": 20,
+    "RESPOSTA_INDEVIDA": 1
+   },
+   "net_score": 0.8,
+   "accuracy": [
+    51,
+    60
+   ],
+   "correct_among_answerable": [
+    31,
+    39
+   ],
+   "correct_refusals_among_unanswerable": [
+    20,
+    21
+   ],
+   "answer_rate": [
+    35,
+    60
+   ],
+   "unsupported_among_answered": [
+    3,
+    35
+   ],
+   "json_strict": [
+    60,
+    60
+   ],
+   "json_usable": [
+    60,
+    60
+   ],
+   "seconds_per_question": 2.4230166666666664,
+   "cites_evidence": [
+    34,
+    34
+   ],
+   "outcome_by_case": {
+    "t01": "CORRETA",
+    "t02": "CORRETA",
+    "t03": "ALUCINACAO",
+    "t04": "CORRETA",
+    "t05": "CORRETA",
+    "t06": "CORRETA",
+    "t07": "CORRETA",
+    "t08": "RECUSA_INDEVIDA",
+    "t09": "ALUCINACAO",
+    "t10": "CORRETA",
+    "t11": "CORRETA",
+    "t12": "CORRETA",
+    "t13": "CORRETA",
+    "t14": "CORRETA",
+    "t15": "CORRETA",
+    "t16": "CORRETA",
+    "t17": "CORRETA",
+    "t18": "CORRETA",
+    "t19": "CORRETA",
+    "t20": "CORRETA",
+    "t21": "INSUFICIENTE",
+    "t22": "CORRETA",
+    "t23": "CORRETA",
+    "t24": "CORRETA",
+    "t25": "CORRETA",
+    "t26": "RECUSA_INDEVIDA",
+    "t27": "CORRETA",
+    "t28": "CORRETA",
+    "t29": "CORRETA",
+    "t30": "CORRETA",
+    "t31": "RECUSA_INDEVIDA",
+    "t32": "RECUSA_INDEVIDA",
+    "t33": "CORRETA",
+    "t34": "CORRETA",
+    "t35": "CORRETA",
+    "t36": "CORRETA",
+    "t37": "RECUSA_INDEVIDA",
+    "t38": "CORRETA",
+    "t39": "CORRETA",
+    "t40": "RECUSA_CORRETA",
+    "t41": "RECUSA_CORRETA",
+    "t42": "RECUSA_CORRETA",
+    "t43": "RECUSA_CORRETA",
+    "t44": "RECUSA_CORRETA",
+    "t45": "RECUSA_CORRETA",
+    "t46": "RECUSA_CORRETA",
+    "t47": "RECUSA_CORRETA",
+    "t48": "RECUSA_CORRETA",
+    "t49": "RESPOSTA_INDEVIDA",
+    "t50": "RECUSA_CORRETA",
+    "t51": "RECUSA_CORRETA",
+    "t52": "RECUSA_CORRETA",
+    "t53": "RECUSA_CORRETA",
+    "t54": "RECUSA_CORRETA",
+    "t55": "RECUSA_CORRETA",
+    "t56": "RECUSA_CORRETA",
+    "t57": "RECUSA_CORRETA",
+    "t58": "RECUSA_CORRETA",
+    "t59": "RECUSA_CORRETA",
+    "t60": "RECUSA_CORRETA"
+   }
+  }
+ },
+ "always_refuse": {
+  "cases": 60,
+  "outcomes": {
+   "CORRETA": 0,
+   "INSUFICIENTE": 0,
+   "ALUCINACAO": 0,
+   "RECUSA_DISFARCADA": 0,
+   "RECUSA_INDEVIDA": 39,
+   "RECUSA_CORRETA": 21,
+   "RESPOSTA_INDEVIDA": 0
+  },
+  "net_score": 0.35,
+  "accuracy": [
+   21,
+   60
+  ],
+  "correct_among_answerable": [
+   0,
+   39
+  ],
+  "correct_refusals_among_unanswerable": [
+   21,
+   21
+  ],
+  "answer_rate": [
+   0,
+   60
+  ],
+  "unsupported_among_answered": [
+   0,
+   0
+  ]
+ },
+ "mcnemar": {
+  "no_context x rag": {
+   "only_first_correct": 2,
+   "only_second_correct": 31,
+   "p_value": 1.3085082173347473e-07
+  },
+  "rag x rag_lora": {
+   "only_first_correct": 3,
+   "only_second_correct": 5,
+   "p_value": 0.7265625
+  },
+  "no_context x rag_lora": {
+   "only_first_correct": 1,
+   "only_second_correct": 32,
+   "p_value": 7.916241884231567e-09
+  }
+ }
+}

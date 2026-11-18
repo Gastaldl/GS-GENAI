@@ -31,7 +31,7 @@ A descontaminação compara perguntas, não fatos. Alguns fatos aparecem em mais
 
 ## Montagem dos exemplos
 
-Cada exemplo tem exatamente o formato da API: o mesmo prompt de sistema (`SYSTEM_RAG`), três trechos rotulados `T1` a `T3` e a pergunta, montados por `luz_segura.prompt.build_messages`. A resposta esperada é o JSON `{"consta", "resposta", "fontes"}`. Antes da montagem, 10% das perguntas de cada estilo e de cada tipo de recusa foram separados para a validação. Assim, nenhuma pergunta aparece nos dois arquivos.
+Cada exemplo segue o formato das mensagens da API, montado pela mesma função (`luz_segura.prompt.build_messages`). Tem o mesmo prompt de sistema (`SYSTEM_RAG`), a pergunta e três trechos rotulados `T1` a `T3`, como na busca densa usada no placar. No sistema final, a API às vezes acrescenta um 4º trecho (`T4`, o melhor do BM25), caso que o treino não cobre. A resposta esperada é o JSON `{"consta", "resposta", "fontes"}`. Antes da montagem, 10% das perguntas de cada estilo e de cada tipo de recusa foram separados para a validação. Assim, nenhuma pergunta aparece nos dois arquivos.
 
 | tipo | o que ensina | treino | validação |
 |---|---|---|---|
@@ -43,7 +43,7 @@ Cada exemplo tem exatamente o formato da API: o mesmo prompt de sistema (`SYSTEM
 | `refusal` | recusar perguntas sem resposta na base, com os 3 trechos de treino mais parecidos | 51 | 6 |
 | **total** | | **328** (223 com resposta) | **37** (25 com resposta) |
 
-Cerca de 12% das respostas esperadas no treino (38 de 328) começam com "Não", porque a pergunta supõe algo que o trecho nega.
+Cerca de 12% das respostas esperadas no treino (38 de 328) começam com "Não". Dessas, 35 respondem "não" a uma pergunta de sim ou não ou negam o que a pergunta supõe. As outras 3 são orientações de segurança ("Não toque na pessoa...", "Não se aproxime e não toque no fio...").
 
 Tamanho, em tokens do Qwen3: mediana de 1.037 e máximo de 1.545 no treino, abaixo do limite de 2.048 usado no treino.
 
@@ -52,6 +52,7 @@ Tamanho, em tokens do Qwen3: mediana de 1.037 e máximo de 1.545 no treino, abai
 O treino roda no notebook `notebooks/03_treino_lora_colab.ipynb`, no Google Colab com GPU T4. A configuração é esta:
 
 - QLoRA com o modelo base em 4 bits (nf4, quantização dupla) e cálculo em float16;
+- pesos do LoRA em float32 durante o treino e salvos em float16 no zip. Com a base em 4 bits, o TRL 1.18 passa esses pesos para bfloat16 mesmo com `fp16=True` (problema em aberto no TRL, [huggingface/trl#7776](https://github.com/huggingface/trl/issues/7776)). A T4 não tem bfloat16, e o treino em float16 não aceita gradientes nesse tipo, então o notebook devolve os pesos para float32 logo depois de montar o `SFTTrainer`;
 - LoRA de rank 16 e alpha 16, com dropout 0,05, nas 7 projeções (q, k, v, o, gate, up, down);
 - 3 épocas;
 - taxa de aprendizado 2e-4 com decaimento cosseno e 10 passos de aquecimento;
@@ -59,6 +60,20 @@ O treino roda no notebook `notebooks/03_treino_lora_colab.ipynb`, no Google Cola
 - semente 42.
 
 A perda conta só nos tokens da resposta, que é o padrão do TRL para dados prompt/completion. O notebook salva o adaptador de cada época, e a época usada é escolhida no dev (notebook 04).
+
+## Resultado do treino
+
+O treino rodou numa T4 do Colab em 46,6 minutos, com 123 passos e pico de 3,6 GiB de memória:
+
+| época | perda na validação | placar líquido no dev (RAG + LoRA) |
+|---|---|---|
+| 1 | 0,237 | 0,900 |
+| 2 | 0,244 | 0,925 |
+| 3 | 0,254 | 0,925 |
+
+A perda de treino caiu de 0,90 para 0,08, e a de validação subiu depois da 1ª época, sinal de que o adaptador passou a se ajustar demais aos exemplos. A escolha da época usa o placar no dev, e o empate entre as épocas 2 e 3 foi decidido pela menor perda de validação. Ficou a época 2.
+
+O notebook 04 mostra um efeito colateral do treino. 72 das 223 respostas-alvo citam artigo de lei, e o adaptador passou a citar dispositivos com muito mais frequência. Uma vez, inventou um inciso (erro 5). Num próximo treino, convém incluir exemplos em que o trecho cita o artigo sem inciso e a resposta também não cita.
 
 Depois do treino, todas as épocas do zip são convertidas para GGUF de uma vez. O script também copia do zip as métricas do treino e o exemplo formatado para `modelos/adaptador/metricas_treino.json` e `modelos/adaptador/exemplo_formatado.txt`. O zip tem cerca de 200 MB: deixe-o fora do repositório (por exemplo, na pasta Downloads) e passe o caminho dele:
 

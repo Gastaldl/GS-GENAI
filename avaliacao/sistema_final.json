@@ -1,0 +1,39 @@
+{
+ "mode": "rag_lora",
+ "retrieval": {
+  "adopted": true,
+  "strategy": "append",
+  "prefix": 5
+ },
+ "rule": "configuração: maior placar líquido no dev com a busca densa (empate: RAG simples); busca: maior placar líquido no dev na configuração escolhida (empate: a que menos muda os trechos, na ordem densa, acrescenta, troca)",
+ "dev_net_score": {
+  "2. RAG simples | busca densa": 0.9,
+  "2. RAG simples | busca troca": 0.925,
+  "2. RAG simples | busca acrescenta": 0.925,
+  "3. RAG + LoRA | busca densa": 0.925,
+  "3. RAG + LoRA | busca troca": 0.9,
+  "3. RAG + LoRA | busca acrescenta": 0.95
+ },
+ "retrieval_failures_train_dev": {
+  "densa": 19,
+  "troca": 9,
+  "acrescenta": 9
+ },
+ "questions_with_changed_chunks_train_dev": {
+  "densa": 0.0,
+  "troca": 0.802,
+  "acrescenta": 0.22
+ },
+ "provision_check": {
+  "adopted": true,
+  "rule": "adota se a conferência não barrar nenhuma resposta-alvo do treino e da validação nem nenhuma resposta correta do dev",
+  "targets_with_inciso": 19,
+  "targets_blocked": 0,
+  "dev_correct_blocked": 0,
+  "blocked": [
+   "teste_rag_lora: t09",
+   "teste_rag_lora_busca_acrescenta: t09",
+   "teste_rag_lora_busca_troca: t09"
+  ]
+ }
+}

@@ -33,4 +33,19 @@ uv pip install --python ferramentas/venv-conversao -r ferramentas/llama-b12359-f
 
 Depois, `uv run python treino/convert_adapter.py <caminho do adaptador_luz_segura.zip>` converte todas as épocas (veja o passo 5 do README).
 
-<!-- ADAPTADOR -->
+## Adaptador LoRA (no repositório)
+
+| item | valor |
+|---|---|
+| arquivo | `modelos/adaptador/luz-segura-lora-f16.gguf` |
+| origem | época 2 do treino no Colab (notebook 03), escolhida no dev pelo notebook 04 |
+| formato | GGUF f16, 504 tensores (matrizes A e B do LoRA nas 7 projeções das 36 camadas), convertido com `convert_lora_to_gguf.py` do llama.cpp b12359 |
+| tamanho | 66.094.848 bytes |
+| sha256 | `bafcba7b416f66e69e74f96bbfc7147e7050677dd287ecbbf4d9a2456891261f` |
+
+Na mesma pasta:
+- `metricas_treino.json`: perdas por época, duração, memória e versões do treino;
+- `exemplo_formatado.txt`: um exemplo de treino já no formato de chat do modelo;
+- `escolha_da_epoca.json`: placar de cada época no dev e a regra da escolha.
+
+O GGUF das outras épocas fica em `modelos/epocas/`, fora do repositório, e pode ser gerado de novo a partir do zip do notebook 03. O `llama-server` carrega o adaptador com `--lora modelos/adaptador/luz-segura-lora-f16.gguf --lora-init-without-apply`. Cada requisição escolhe a escala: 0 na configuração RAG simples e 1 na RAG + LoRA.

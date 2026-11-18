@@ -6,6 +6,11 @@ O modelo deve devolver só um objeto JSON com as chaves "consta", "resposta" e "
 - usable: depois de remover espaços e uma eventual cerca de código (```json ... ```),
   o JSON está no formato e as fontes são rótulos válidos, sem repetição.
 A API só aceita respostas "usable"; as demais viram a recusa padronizada.
+
+Além do formato, unsupported_provisions confere os incisos de lei citados na resposta ("art. 453,
+inciso I") contra os trechos recebidos. A avaliação já confere os números da resposta contra o
+material de apoio (evaluation.unsupported_data), mas um inciso em algarismo romano escapa dessa
+conferência (notebook 04, erro 5).
 """
 from __future__ import annotations
 
@@ -15,6 +20,58 @@ from dataclasses import dataclass
 
 KEYS = ["consta", "resposta", "fontes"]
 FENCE = re.compile(r"^```(?:json)?\s*(.*?)\s*```$", re.DOTALL)
+
+# Dispositivos citados na resposta: "art. 453, inciso I", "artigo 222, incisos I e III", "art. 150, I"
+# (sem a palavra inciso, só com algarismo romano maiúsculo), "art. 7º, § 2º, IV" (inciso de um
+# parágrafo) e "inciso V do art. 454".
+ROMAN_LIST = r"[IVX]+(?:\s*(?:,|\be\b)\s*[IVX]+)*"
+ARTICLE = r"(?i:\bart(?:igo)?\.?)\s*(\d+(?:-[A-Za-z])?)\s*[º°]?"
+PARAGRAPH = r"(?:\s*,\s*§\s*\d+\s*[º°]?)?"
+CITED_WITH_WORD = re.compile(ARTICLE + PARAGRAPH + r"\s*,\s*(?i:incisos?)\s+((?i:[ivx]+(?:\s*(?:,|\be\b)\s*[ivx]+)*))\b")
+CITED_BARE = re.compile(ARTICLE + PARAGRAPH + r"\s*,\s*(" + ROMAN_LIST + r")\b")
+CITED_REVERSED = re.compile(r"(?i:\bincisos?)\s+((?i:[ivx]+))\s+(?:(?i:do)\s+§\s*\d+\s*[º°]?\s+)?"
+                            r"(?i:do\s+art(?:igo)?\.?)\s*(\d+(?:-[A-Za-z])?)")
+ARTICLE_HEADING = re.compile(r"\bArt\.\s*(\d+(?:-[A-Z])?)\s*[.º°]")  # "Art. 453." e "Art. 1º" nos trechos de lei
+
+
+def cited_incisos(answer: str) -> list[tuple[str, str]]:
+    """Pares (artigo, inciso) citados na resposta, sem repetição: "art. 222, incisos I e III" dá
+    [("222", "I"), ("222", "III")]."""
+    found = []
+    for pattern, article_group, items_group in ((CITED_WITH_WORD, 1, 2), (CITED_BARE, 1, 2), (CITED_REVERSED, 2, 1)):
+        for match in pattern.finditer(answer):
+            article = match.group(article_group).upper()
+            for item in re.split(r"\s*(?:,|\be\b)\s*", match.group(items_group)):
+                if item and (article, item.upper()) not in found:
+                    found.append((article, item.upper()))
+    return found
+
+
+def _article_blocks(texts: list[str]) -> dict[str, list[str]]:
+    """Texto de cada artigo nos trechos: do cabeçalho "Art. N." até o cabeçalho seguinte."""
+    blocks: dict[str, list[str]] = {}
+    for text in texts:
+        heads = list(ARTICLE_HEADING.finditer(text))
+        for i, head in enumerate(heads):
+            end = heads[i + 1].start() if i + 1 < len(heads) else len(text)
+            blocks.setdefault(head.group(1).upper(), []).append(text[head.end():end])
+    return blocks
+
+
+def unsupported_provisions(answer: str, chunk_texts: list[str]) -> list[str]:
+    """Incisos citados na resposta que os trechos não trazem. Um inciso tem apoio se o artigo aparece
+    nos trechos com cabeçalho ("Art. 453.") e, no texto dele, o inciso como item ("I - "), ou se os
+    trechos citam o mesmo artigo e inciso em prosa ("art. 150, I" ou "art. 7º, § 2º, IV")."""
+    blocks = _article_blocks(chunk_texts)
+    joined = "\n".join(chunk_texts)
+    missing = []
+    for article, item in cited_incisos(answer):
+        as_item = re.compile(rf"(?<![A-Za-z]){item}\s*[-–—]\s")
+        in_prose = re.compile(rf"(?i:\bart(?:igo)?\.?)\s*{re.escape(article)}\s*[º°]?\s*,\s*(?:§\s*\d+\s*[º°]?\s*,\s*)?"
+                              rf"(?:(?i:incisos?)\s+)?(?:[IVX]+\s*(?:,|\be\b)\s*)*{item}\b", re.IGNORECASE)
+        if not any(as_item.search(block) for block in blocks.get(article, [])) and not in_prose.search(joined):
+            missing.append(f"art. {article}, inciso {item}")
+    return missing
 
 
 @dataclass(frozen=True)
