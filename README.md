@@ -4,6 +4,8 @@ Componente de inteligência do MVP **Luz Segura** (FIAP Global Solution 2026.2, 
 
 O Luz Segura ajuda quem anda a pé ou usa transporte público à noite em Osasco (SP) a relatar pontos escuros e a cobrar o conserto da iluminação pública. Este repositório tem o **assistente** do serviço, um modelo de linguagem local que tira dúvidas do morador sobre iluminação pública. Ele responde em português simples, devolve sempre um JSON, cita os trechos da base de conhecimento em que se apoia e diz **"não consta"** quando a base não cobre a pergunta. Exemplos de dúvidas: quem conserta a lâmpada da rua, como pedir, o que é a CIP na conta de luz, o que fazer com um fio caído e como funciona o próprio Luz Segura.
 
+Problema escolhido entre os três da atividade (energia, segurança ou mobilidade): **segurança**.
+
 O mesmo modelo local foi avaliado em três configurações (sem contexto, RAG simples e RAG + LoRA) com o mesmo conjunto de teste. O relatório da entrega está em [RELATORIO.md](RELATORIO.md).
 
 ## Integrantes

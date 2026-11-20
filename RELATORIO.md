@@ -2,6 +2,8 @@
 
 FIAP Global Solution 2026.2 · CitizenTech · Engenharia de Software 4ES · Generative AI for Engineering
 
+Problema escolhido entre os três da atividade (energia, segurança ou mobilidade): **segurança**, a iluminação pública no trajeto noturno de quem anda a pé ou usa ônibus em Osasco (SP).
+
 ## 1. Integrantes
 
 | Nome completo | RM |
@@ -274,3 +276,5 @@ Próximos passos:
 - revisar a base a cada mudança na concessão da Enel ou nas leis de Osasco.
 
 **Repositório:** https://github.com/Gastaldl/GS-GENAI
+
+**Vídeo:** https://youtu.be/fCVAo9lV0XQ
