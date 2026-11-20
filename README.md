@@ -19,7 +19,7 @@ O mesmo modelo local foi avaliado em três configurações (sem contexto, RAG si
 ## Links
 
 - **Repositório:** https://github.com/Gastaldl/GS-GENAI
-- **Vídeo:** COLOCAR_LINK_DO_VIDEO
+- **Vídeo:** [VIDEO PITCH](https://youtu.be/oAgjTRLe3cA)
 
 ## Ficha técnica do MVP
 
