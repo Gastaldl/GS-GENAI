@@ -18,7 +18,7 @@ O mesmo modelo local foi avaliado em três configurações (sem contexto, RAG si
 
 ## Link
 
-- **Vídeo:** [VIDEO PITCH](https://youtu.be/oAgjTRLe3cA)
+- **Vídeo:** [VIDEO PITCH](https://youtu.be/fCVAo9lV0XQ)
 
 ## Ficha técnica do MVP
 
