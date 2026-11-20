@@ -16,9 +16,8 @@ O mesmo modelo local foi avaliado em três configurações (sem contexto, RAG si
 | João Victor Soares | RM551410 |
 | Márcio Gastaldi de Oliveira Soares | RM98811 |
 
-## Links
+## Link
 
-- **Repositório:** https://github.com/Gastaldl/GS-GENAI
 - **Vídeo:** [VIDEO PITCH](https://youtu.be/oAgjTRLe3cA)
 
 ## Ficha técnica do MVP
